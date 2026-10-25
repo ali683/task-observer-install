@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "matcher": "", "hooks": [ { "type": "command", "command": "bash '/root/.claude/hooks/task-observer-session-start.sh'" } ] }
+    ],
+    "Stop": [
+      { "matcher": "", "hooks": [ { "type": "command", "command": "node '/root/.claude/hooks/task-observer-stop.js'" } ] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Write", "hooks": [ { "type": "command", "command": "node '/root/.claude/hooks/task-observer-observation-barrier.js'" } ] },
+      { "matcher": "Write|Edit|MultiEdit", "hooks": [ { "type": "command", "command": "node '/root/.claude/hooks/task-observer-skill-write-gate.js'" } ] }
+    ],
+    "PostToolUse": [
+      { "matcher": "Read", "hooks": [ { "type": "command", "command": "node '/root/.claude/hooks/task-observer-skill-write-gate.js'" } ] }
+    ]
+  }
+}
