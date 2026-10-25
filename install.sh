@@ -13,9 +13,11 @@ chmod 755 "$claude/hooks/"*.sh
 # Pin the workspace in the hook scripts and CLAUDE.md to this machine's path
 for f in "$claude/hooks/"task-observer-*.{js,sh}; do sed -i.bak "s#/home/user#$ws#g" "$f" && rm -f "$f.bak"; done
 sed -e "s#/home/user#$ws#g" -e "s#/root/.claude#$claude#g" "$here/settings.json" > "$claude/settings.json"
-{ [ -f "$claude/CLAUDE.md" ] && cat "$claude/CLAUDE.md" && echo; } > "$claude/CLAUDE.md.tmp" || true
-sed "s#/home/user#$ws#g" "$here/CLAUDE.md" >> "$claude/CLAUDE.md.tmp"
-mv "$claude/CLAUDE.md.tmp" "$claude/CLAUDE.md"
+if ! grep -q "task-observer activation block" "$claude/CLAUDE.md" 2>/dev/null; then
+  { [ -f "$claude/CLAUDE.md" ] && cat "$claude/CLAUDE.md" && echo; } > "$claude/CLAUDE.md.tmp" || true
+  sed "s#/home/user#$ws#g" "$here/CLAUDE.md" >> "$claude/CLAUDE.md.tmp"
+  mv "$claude/CLAUDE.md.tmp" "$claude/CLAUDE.md"
+fi
 mkdir -p "$ws/skill-observations/observation-log/archive"
 [ -e "$ws/skill-observations/last-review-date.txt" ] || printf 'never\n' > "$ws/skill-observations/last-review-date.txt"
 [ -e "$ws/skill-observations/cross-cutting-principles.md" ] || printf '# Cross-Cutting Principles\n\nPrinciples that apply to all skills. Read as a mandatory checklist during\nany skill creation or regeneration.\n\n---\n\n## Active Principles\n' > "$ws/skill-observations/cross-cutting-principles.md"
